@@ -244,6 +244,9 @@ export default {
     },
     getTranslatedTitle(key) {
       return this.translatedTitles[this.language][key];
+    },
+    shouldReceiveNotification(notification) {
+      return notification.role === 'Coordinateur';
     }
   },
   mounted() {
@@ -252,7 +255,8 @@ export default {
   },
   beforeMount() {
     document.removeEventListener('click', this.handleClickOutside);
-  }
+  },
+ 
 };
 </script>
 

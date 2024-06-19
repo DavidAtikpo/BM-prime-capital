@@ -74,9 +74,9 @@ export default {
           } else if (msg.sender_id._id === this.currentUserId) {
             return { ...msg, type: 'sent' };
           }
+          console.log('message data',response.data);
           return msg;
         });
-
         this.userMessages = transformedMessages;
         console.log('get message', this.userMessages);
       } catch (error) {
@@ -186,14 +186,14 @@ h1, h2 {
   border-radius: 5px;
 }
 
-strong,.sent{
+strong,.You{
   text-align: right;
-  color: blue;
+  color: blue !important;
 }
 
-strong,.received{
+strong,.sent{
   text-align: left;
-  color: green;
+  color: green !important;
 }
 
 .message-input {

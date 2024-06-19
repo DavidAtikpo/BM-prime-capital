@@ -1,41 +1,42 @@
 <template>
   <nav class="navigation">
-    <!-- Bouton "Plus" pour les éléments de navigation -->
-    <button class="menu-btn" @click="toggleMenu">Plus</button>
+    <!-- "More" button for navigation items -->
+    <button class="menu-btn" @click="toggleMenu">More</button>
 
-    <!-- Liste des éléments de navigation -->
+    <!-- List of navigation items -->
     <ul :class="{ 'show-menu': isMenuOpen }">
       <li>
-        <router-link to="/user/analytics" class="nav-link" active-class="active">Dashboard</router-link>
+        <router-link to="/user/analytics" class="nav-link" active-class="active">{{ getTranslatedTitle('dashboard') }}</router-link>
       </li>
       <li>
-        <router-link to="/user/suivi" class="nav-link" active-class="active">Objectif</router-link>
+        <router-link to="/user/suivi" class="nav-link" active-class="active">{{ getTranslatedTitle('goal') }}</router-link>
       </li>
       <li>
-        <router-link to="/user/rapport" class="nav-link" active-class="active">Rapport</router-link>
+        <router-link to="/user/rapport" class="nav-link" active-class="active">{{ getTranslatedTitle('report') }}</router-link>
       </li>
       <li>
-        <router-link to="/user/ActiviteHebdomadaire" class="nav-link" active-class="active">Objectifs Heb</router-link>
+        <router-link to="/user/ActiviteHebdomadaire" class="nav-link" active-class="active">{{ getTranslatedTitle('weeklyGoal') }}</router-link>
       </li>
       <li>
-        <router-link to="/user/inscription" class="nav-link" active-class="active">Inscription</router-link>
+        <router-link to="/user/inscription" class="nav-link" active-class="active">{{ getTranslatedTitle('registration') }}</router-link>
       </li>
       <li>
-        <router-link to="/user/listOfchildren" class="nav-link" active-class="active">Presents</router-link>
+        <router-link to="/user/weekGoal" class="nav-link" active-class="active">{{ getTranslatedTitle('week') }}</router-link>
       </li>
       <li>
-        <router-link to="/user/Absent" class="nav-link" active-class="active">Absents</router-link>
+        <router-link to="/user/listOfchildren" class="nav-link" active-class="active">{{ getTranslatedTitle('present') }}</router-link>
+      </li>
+      <li>
+        <router-link to="/user/Absent" class="nav-link" active-class="active">{{ getTranslatedTitle('absent') }}</router-link>
       </li>
     </ul>
 
-    <div class="search-container">
-      <div class="search">
-        <input type="text" v-model="searchQuery" @input="search" placeholder="Rechercher...">
-        <ul v-if="searchResults.length > 0" class="dropdown">
-          <li v-for="(result, index) in searchResults" :key="index" @click="displayResult(result)">{{ result }}</li>
-        </ul>
-        <p v-if="searchQuery.length > 0 && searchResults.length === 0" class="dropdown">Aucun résultat trouvé.</p>
-      </div>
+    <div class="search">
+      <input type="text" v-model="searchQuery" @input="search" placeholder="Search...">
+      <ul v-if="searchResults.length > 0" class="dropdown">
+        <li v-for="(result, index) in searchResults" :key="index" @click="displayResult(result)">{{ result }}</li>
+      </ul>
+      <p v-if="searchQuery.length > 0 && searchResults.length === 0" class="dropdown">No results found.</p>
     </div>
 
     <div class="icons">
@@ -47,7 +48,7 @@
       </div>
       <div v-if="isNotificationDropdownOpen" class="dropdown">
         <ul>
-          <li v-if="notifications.length === 0">Aucune notification</li>
+          <li v-if="notifications.length === 0">No notifications</li>
           <li v-for="(notification, index) in notifications" :key="index">{{ notification.user }},{{ notification.entry }}</li>
         </ul>
       </div>
@@ -55,59 +56,64 @@
       <div v-if="isProfileDropdownOpen" class="dropdown">
         <ul>
           <li>
-            <router-link to="/user/userInfo">Éditer photo</router-link>
+            <router-link to="/user/userInfo">{{ getTranslatedTitle ('editPhoto') }}</router-link>
           </li>
           <li>
-            <router-link to="/user/gererCount">Gérer le compte</router-link>
+            <router-link to="/user/gererCount">{{ getTranslatedTitle('manageAccount') }}</router-link>
           </li>
           <li>
-            <router-link to="/user/Parametre">Paramètres</router-link>
+            <router-link to="/user/Parametre">{{ getTranslatedTitle('setting') }}</router-link>
           </li>
         </ul>
-        <div @click="confirmLogout">Déconnexion</div>
+        <div @click="confirmLogout">{{ getTranslatedTitle('logout') }}</div>
       </div>
     </div>
   </nav>
-  <div class="side-bar">
-  <div><Sidebar v-if="isMenuOpen" class="accordion-menu" /></div>
-    <div class="content">
-      <!-- <div class="logo">
-        <img class="logo-rr" src="@/assets/images/O1fwRfHZHUkuh80hZOZnugDg84F1686830307718_200x200.png" alt="CDE koinonia" />
-      </div> -->
-      <div class="side-buttons">
-        <!-- <router-link to="/user/analytics" active-class="active" exact-active-class="exact-active" class="default-link">
-          <div class="nav">Dashboard</div>
-        </router-link> -->
-        <router-link to="/user/review" active-class="active" exact-active-class="exact-active" class="default-link">
-          <div class="nav">Review</div>
-        </router-link>
-        <router-link to="/user/feedback" active-class="active" exact-active-class="exact-active" class="default-link">
-          <div class="nav">Feedback</div>
-        </router-link>
-        <router-link to="/user/Message" active-class="active" exact-active-class="exact-active" class="default-link">
-          <div class="nav">Message</div>
-        </router-link>
-        <router-link to="/user/statistic" active-class="active" exact-active-class="exact-active" class="default-link">
-          <div class="nav">Statistique</div>
-        </router-link>
-        <router-link to="/user/setting" active-class="active" exact-active-class="exact-active" class="default-link">
-          <div class="nav">Paramettre</div>
-        </router-link>
+  <div>
+    <div class="menu-toggle" @click="toggleMenu">
+      <div class="hamburger"></div>
+    </div>
+    <div :class="['side-bar', { 'hide-menu': isMobile && !menuVisible }]">
+      <div class="content">
+        <!-- <div class="logo">
+          <img class="logo-rr" src="@/assets/images/bm_prime_capital_llc_logo.jpeg" alt="CDE koinonia" />
+        </div> -->
+        <div class="side-buttons">
+          <router-link to="/user/userActivity" active-class="active" exact-active-class="exact-active" class="default-link">
+            <div class="nav">{{ getTranslatedTitle('board') }}</div>
+          </router-link>
+          <router-link to="/user/Review" active-class="active" exact-active-class="exact-active" class="default-link">
+            <div class="nav">{{ getTranslatedTitle('users') }}</div>
+          </router-link>
+          <router-link to="/user/dailyObject" active-class="active" exact-active-class="exact-active" class="default-link">
+            <div class="nav">{{ getTranslatedTitle('activities') }}</div>
+          </router-link>
+          <router-link to="/user/report" active-class="active" exact-active-class="exact-active" class="default-link">
+            <div class="nav">{{ getTranslatedTitle('report') }}</div>
+          </router-link>
+          <router-link to="/user/statistic" active-class="active" exact-active-class="exact-active" class="default-link">
+            <div class="nav">{{ getTranslatedTitle('statistics') }}</div>
+          </router-link>
+          <router-link to="/user/message" active-class="active" exact-active-class="exact-active" class="default-link">
+            <div class="nav">{{ getTranslatedTitle('messages') }}</div>
+          </router-link>
+          <router-link to="/user/setting" active-class="active" exact-active-class="exact-active" class="default-link">
+            <div class="nav">{{ getTranslatedTitle('settings') }}</div>
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
+
 <script>
-import Sidebar from './UserDashSidebarComponent.vue';
 import { notificationsMixin } from '@/mixins/notificationMixins';
+import { mapState } from 'vuex';
 import axios from 'axios';
 import { API_BASE_URL } from '@/config.js';
 
 export default {
-  components: {
-    Sidebar
-  },
   mixins: [notificationsMixin],
   data() {
     return {
@@ -116,15 +122,55 @@ export default {
       searchResults: [],
       isNotificationDropdownOpen: false,
       isProfileDropdownOpen: false,
-      profilePhotoURL: '',
+      profilePhotoURL: ''
     };
   },
-  mounted() {
-    this.fetchProfilePicture();
-    document.addEventListener('click', this.handleClickOutside);
-  },
-  beforeUnmount() {
-    document.removeEventListener('click', this.handleClickOutside);
+  computed: {
+    ...mapState(['theme', 'language']),
+    translatedTitles() {
+      return {
+        en: {
+          dashboard: 'Dashboard',
+          goal: 'Goal',
+          report: 'Report',
+          weeklyGoal: 'Weekly Goal',
+          registration: 'Registration',
+          week: 'Week',
+          present: 'Present',
+          absent: 'Absent',
+          board: 'Board',
+          users: 'Users',
+          activities: 'Activities',
+          statistics: 'Statistics',
+          messages: 'Messages',
+          settings: 'Settings',
+          editPhoto:'Edit Photo',
+          manageAccount: 'Manage Account',
+          setting:'Settings',
+          logout:'Logout'
+        },
+        fr: {
+          dashboard: 'Accueil',
+          goal: 'Objectif',
+          report: 'Rapport',
+          weeklyGoal: 'Objectifs Heb',
+          registration: 'Inscription',
+          week: 'Semaine',
+          present: 'Presents',
+          absent: 'Absents',
+          board:'Tableau',
+          users: 'Utilisateurs',
+          activities: 'Activites',
+          statistics: 'Statistique',
+          messages: 'Message',
+          settings: 'Paramètre',
+          editPhoto:'Modifier Photo',
+          manageAccount:'Gestion de compte',
+          setting:'Parametre',
+          logout:'Deconnexion'
+        }
+      };
+    }
   },
   methods: {
     toggleMenu() {
@@ -145,7 +191,8 @@ export default {
 
       axios.get(`${API_BASE_URL}/admin/getprofil`, { headers })
         .then(res => {
-          this.profilePhotoURL = res.data.profilePhotoUrl;
+          this.profilePhotoURL = res.data.profilePhotoUrl; // Assuming the response contains the profile photo URL
+          console.log('profilePicture', this.profilePhotoURL);
         })
         .catch(error => {
           console.error('Error fetching profile picture:', error);
@@ -165,7 +212,7 @@ export default {
         });
     },
     displayResult(result) {
-      console.log('Informations sur le résultat sélectionné:', result);
+      console.log('Selected result info:', result);
     },
     async logout() {
       try {
@@ -178,7 +225,7 @@ export default {
       }
     },
     confirmLogout() {
-      if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+      if (confirm('Are you sure you want to log out?')) {
         this.logout();
       }
     },
@@ -191,25 +238,34 @@ export default {
       if (clickedOutsideNotification && this.isNotificationDropdownOpen) {
         this.isNotificationDropdownOpen = false;
       }
-
       if (clickedOutsideProfile && this.isProfileDropdownOpen) {
         this.isProfileDropdownOpen = false;
       }
     },
+    getTranslatedTitle(key) {
+      return this.translatedTitles[this.language][key];
+    },
     shouldReceiveNotification(notification) {
-      return notification.role !== 'Coordinateur';
+      return notification.role === 'Coordinateur';
     }
-  }
+  },
+  mounted() {
+    this.fetchProfilePicture();
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  beforeMount() {
+    document.removeEventListener('click', this.handleClickOutside);
+  },
+ 
 };
 </script>
 
 
 <style scoped>
+/* Votre style ici */
 .navigation {
-  width: 100%;
-  height: 1rem;
-  background-color: #08083b;
-  padding: 30px;
+  background-color:#1d1c1c;
+  padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -276,13 +332,14 @@ li {
 .nav-link {
   color: white;
   text-decoration: none;
-  font-size: 20px;
-  padding-right: 40px;
 }
 
 .active {
   font-weight: bold;
 }
+
+/* Afficher la liste des éléments de navigation lorsque le bouton "Plus" est cliqué */
+
 
 /* Media query pour afficher le bouton "Plus" lorsque l'écran est réduit */
 @media (max-width: 600px) {
@@ -290,23 +347,25 @@ li {
     display: block;
     margin-left: 0px;
   }
-  ul {
-    display: none;
-  }
   .show-menu {
     display: flex;
     flex-direction: column;
     position: absolute;
     top: 50px;
-    background-color: #08083b;
+    background-color: yellowgreen;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    height: 15%;
     text-align: center;
-    z-index: 1;
-    width: 100%;
+  }
+  ul {
+    display: none;
+  }
+  .search {
+    width: 80px;
   }
 }
 
-.search-container {
+.search {
   max-width: 500px;
   margin: auto;
 }
@@ -330,9 +389,52 @@ input[type="text"] {
   text-align: center;
   border-radius: 5%;
 }
+.dropdownCDE {
+  position: absolute;
+  top: 50px;
+  right: 55%;
+  background-color: #f9f9f9;
+  width: 10%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  text-align: center;
+}
+.dropdownAC {
+  position: absolute;
+  top: 50px;
+  right: 61%;
+  background-color: #f9f9f9;
+  width: 10%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  text-align: center;
+}
+@media screen and (max-width: 768px) {
+  .dropdownCDE li {
+    display: block;
+  }
+  .navigation {
+    width: 93.2%;
+  }
+  .dropdownAC {
+    display: block;
+    margin-left: 2px;
+  }
+}
 
 .dropdown ul {
   margin-top: 20%;
+}
+.dropdownCDE li {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+}
+
+.dropdownAC li {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
 }
 
 .dropdown li {
@@ -344,6 +446,9 @@ input[type="text"] {
 .dropdown li:hover {
   background-color: #ddd;
 }
+.li {
+  flex-direction: column;
+} 
 
 @media screen and (max-width: 768px) {
   .dropdown {
@@ -351,22 +456,11 @@ input[type="text"] {
   }
 }
 
-.accordion-menu {
-  position: absolute;
-  top: 70px;
-  left: 0;
-  width: 200px;
-  background-color: #08083b;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  padding: 20px;
-  border-radius: 5px;
-}
-/* seconde  nav bar  */
+/* seconde nav bar */
 
 .side-bar {
   margin-top: 20px;
-  margin-left: 30px;
+  /* margin-left: 30px; */
   width: 100%;
   height: 4rem;
   background-color: #ccc;
@@ -408,5 +502,22 @@ input[type="text"] {
 .content{
   text-align: justify;
 }
+@media screen and ( max-width: 768px){
+  .nav {
+    width: 2px;
+    margin-bottom: 0px;
+  margin: 5px;
+  color: rgb(12, 11, 11);
+  font-size: 10px;
 
+}
+.side-bar {
+
+  /* margin-left: 30px; */
+  width: 100%;
+  height: 4rem;
+  background-color: #ccc;
+}
+
+}
 </style>
